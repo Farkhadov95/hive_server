@@ -6,7 +6,7 @@ import chat from "./routes/chat.js";
 import message from "./routes/message.js";
 import cors from "cors";
 import dotenv from "dotenv";
-import { Server as SocketIOServer, Socket } from "socket.io";
+import { Server as SocketIOServer } from "socket.io";
 
 const app = express();
 dotenv.config();
@@ -55,15 +55,14 @@ io.on("connection", (socket) => {
 
   socket.on("typing", (room) => socket.in(room).emit("typing"));
 
-  // socket.on("new message", (newMessageRecieved) => {
-  //   var chat = newMessageRecieved.chat;
+  socket.on("new message", (newMessageRecieved) => {
+    let chat = newMessageRecieved.chat;
 
-  //   if (!chat.users) return console.log("chat.users not defined");
+    if (!chat.users) return console.log("chat.users not defined");
 
-  //   chat.users.forEach((user: UserData) => {
-  //     if (user._id == newMessageRecieved.sender._id) return;
-
-  //     socket.in(user._id).emit("message received", newMessageRecieved);
-  //   });
-  // });
+    chat.users.forEach((user) => {
+      if (user._id == newMessageRecieved.sender._id) return;
+      socket.in(user._id).emit("message received", newMessageRecieved);
+    });
+  });
 });

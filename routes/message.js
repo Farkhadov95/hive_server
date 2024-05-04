@@ -6,7 +6,6 @@ import User from "../models/user.js";
 const router = express.Router();
 
 export default function (io) {
-  // send a message to chat by chatID
   router.post("/", auth, async (req, res) => {
     const userID = req.user?._id;
     const { chatID, content } = req.body;
@@ -32,19 +31,6 @@ export default function (io) {
       });
 
       res.send(message);
-      console.log(message);
-
-      //
-
-      if (message.chat && message.chat.users) {
-        message.chat.users.forEach((user) => {
-          if (user._id !== message.sender) {
-            io.in(user._id).emit("message received", message);
-          }
-        });
-      }
-
-      //
     } catch (error) {
       res.status(400).send("Error while creating message");
     }
