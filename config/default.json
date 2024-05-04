@@ -1,0 +1,4 @@
+{
+    "name": "Hive Server",
+    "jwtPrivateKey": "myHive_jwtPrivateKey"
+}
