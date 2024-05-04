@@ -1,20 +1,12 @@
 import express from "express";
 import helmet from "helmet";
 import mongoose from "mongoose";
-import user from "./routes/user";
-import chat from "./routes/chat";
-import message from "./routes/message";
+import user from "./routes/user.js";
+import chat from "./routes/chat.js";
+import message from "./routes/message.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import { Server as SocketIOServer, Socket } from "socket.io";
-
-export type UserData = {
-  _id: string;
-  username: string;
-  email: string;
-  isAdmin: boolean;
-  createdAt: string;
-};
 
 const app = express();
 dotenv.config();
@@ -48,10 +40,10 @@ app.use("/user", user);
 app.use("/chat", chat);
 app.use("/message", message(io));
 
-io.on("connection", (socket: Socket) => {
+io.on("connection", (socket) => {
   console.log("connected to socket");
 
-  socket.on("setup", (userData: UserData) => {
+  socket.on("setup", (userData) => {
     socket.join(userData._id);
     socket.emit("connected");
   });

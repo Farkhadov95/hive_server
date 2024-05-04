@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import config from "config";
-import User from "../models/user";
+import User from "../models/user.js";
 
 export default async function auth(req, res, next) {
   const token = req.header("X-Auth-Token");

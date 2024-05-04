@@ -1,27 +1,12 @@
 import express from "express";
-import { Response, Request } from "express";
-import Chat from "../models/chat";
-import auth from "../middleware/auth";
-import User from "../models/user";
-import { ObjectId } from "mongoose";
+import Chat from "../models/chat.js";
+import auth from "../middleware/auth.js";
+import User from "../models/user.js";
 
 const router = express.Router();
 
-interface UserRequest {
-  _id: ObjectId;
-  username: string;
-  email: string;
-  password: string;
-  isAdmin: boolean;
-  date: Date;
-}
-
-interface ChatRequest extends Request {
-  user?: UserRequest;
-}
-
 // get all chats by userID
-router.get("/", auth, async (req: ChatRequest, res: Response) => {
+router.get("/", auth, async (req, res) => {
   const userID = req.user?._id;
   try {
     const chats = await Chat.find({
@@ -44,11 +29,11 @@ router.get("/", auth, async (req: ChatRequest, res: Response) => {
 });
 
 // create chat
-router.post("/", auth, async (req: ChatRequest, res: Response) => {
+router.post("/", auth, async (req, res) => {
   const { userID, userName } = req.body;
   if (!userID) return res.status(400).send("userID is required");
 
-  let isChat: Chat[] = await Chat.find({
+  let isChat = await Chat.find({
     isGroupChat: false,
     $and: [
       { users: { $elemMatch: { $eq: req.user?._id } } },
@@ -88,7 +73,7 @@ router.post("/", auth, async (req: ChatRequest, res: Response) => {
 });
 
 // create group chat
-router.post("/group", auth, async (req: ChatRequest, res: Response) => {
+router.post("/group", auth, async (req, res) => {
   if (!req.body.users || !req.body.name) {
     return res.status(400).send("Please fill all the fields");
   }
@@ -122,7 +107,7 @@ router.post("/group", auth, async (req: ChatRequest, res: Response) => {
 });
 
 // update chat's name
-router.put("/rename", auth, async (req: ChatRequest, res: Response) => {
+router.put("/rename", auth, async (req, res) => {
   const { chatID, chatName } = req.body;
 
   const update = await Chat.findByIdAndUpdate(
@@ -140,7 +125,7 @@ router.put("/rename", auth, async (req: ChatRequest, res: Response) => {
 });
 
 // add new user to group chat
-router.put("/add", auth, async (req: ChatRequest, res: Response) => {
+router.put("/add", auth, async (req, res) => {
   const { chatID, userID } = req.body;
 
   const update = await Chat.findByIdAndUpdate(
@@ -160,7 +145,7 @@ router.put("/add", auth, async (req: ChatRequest, res: Response) => {
 });
 
 // delete user from group chat
-router.put("/remove", auth, async (req: ChatRequest, res: Response) => {
+router.put("/remove", auth, async (req, res) => {
   const { chatID, userID } = req.body;
 
   const remove = await Chat.findByIdAndUpdate(
@@ -179,7 +164,7 @@ router.put("/remove", auth, async (req: ChatRequest, res: Response) => {
   res.send(remove);
 });
 
-router.delete("/:id", auth, async (req: ChatRequest, res: Response) => {
+router.delete("/:id", auth, async (req, res) => {
   const chatID = req.params.id;
 
   const chat = await Chat.findById(chatID);

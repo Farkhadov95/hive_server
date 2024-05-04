@@ -1,37 +1,13 @@
 import express from "express";
-import { Response, Request } from "express";
-import auth from "../middleware/auth";
-import { ObjectId } from "mongoose";
-import Chat from "../models/chat";
-import Message from "../models/message";
-import User from "../models/user";
-import { Server as SocketIOServer, Socket } from "socket.io";
+import auth from "../middleware/auth.js";
+import Chat from "../models/chat.js";
+import Message from "../models/message.js";
+import User from "../models/user.js";
 const router = express.Router();
 
-interface UserInterface {
-  _id: ObjectId;
-  username: string;
-  email: string;
-  password: string;
-  isAdmin: boolean;
-  date: Date;
-}
-
-export type UserData = {
-  _id: string;
-  username: string;
-  email: string;
-  isAdmin: boolean;
-  createdAt: string;
-};
-
-interface MessageRequest extends Request {
-  user?: UserInterface;
-}
-
-export default function (io: SocketIOServer) {
+export default function (io) {
   // send a message to chat by chatID
-  router.post("/", auth, async (req: MessageRequest, res: Response) => {
+  router.post("/", auth, async (req, res) => {
     const userID = req.user?._id;
     const { chatID, content } = req.body;
 
@@ -61,7 +37,7 @@ export default function (io: SocketIOServer) {
       //
 
       if (message.chat && message.chat.users) {
-        message.chat.users.forEach((user: UserData) => {
+        message.chat.users.forEach((user) => {
           if (user._id !== message.sender) {
             io.in(user._id).emit("message received", message);
           }
@@ -75,7 +51,7 @@ export default function (io: SocketIOServer) {
   });
 
   // get all messages by chatID
-  router.get("/:chatID", auth, async (req: MessageRequest, res: Response) => {
+  router.get("/:chatID", auth, async (req, res) => {
     console.log("Get Messages Called");
     const chatID = req.params.chatID;
 
