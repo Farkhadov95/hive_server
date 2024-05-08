@@ -30,7 +30,7 @@ router.get("/", auth, async (req, res) => {
 
 // create chat
 router.post("/", auth, async (req, res) => {
-  const { userID, userName } = req.body;
+  const { userID } = req.body;
   if (!userID) return res.status(400).send("userID is required");
 
   let isChat = await Chat.find({
@@ -49,11 +49,10 @@ router.post("/", auth, async (req, res) => {
   });
 
   if (isChat.length > 0) {
-    console.log(isChat[0]);
     res.send(isChat[0]);
   } else {
     let chatData = {
-      chatName: userName,
+      chatName: "New chat",
       isGroupChat: false,
       users: [req.user?._id, userID],
     };
@@ -64,7 +63,6 @@ router.post("/", auth, async (req, res) => {
         "users",
         "-password"
       );
-      console.log(FullChat);
       res.status(200).json(FullChat);
     } catch (error) {
       res.status(400).send("Could not create new chat");
@@ -164,12 +162,20 @@ router.put("/remove", auth, async (req, res) => {
   res.send(remove);
 });
 
+// delete chat
 router.delete("/:id", auth, async (req, res) => {
   const chatID = req.params.id;
+  const userID = req.user?._id;
 
   const chat = await Chat.findById(chatID);
   if (!chat) return res.status(404).send("Chat not found");
-  res.send(chat);
+
+  if (chat.users.includes(userID)) {
+    const deletedChat = await Chat.findOneAndDelete({ _id: chatID });
+    res.status(200).send(deletedChat);
+  } else {
+    res.status(401).send("Unauthorized");
+  }
 });
 
 export default router;

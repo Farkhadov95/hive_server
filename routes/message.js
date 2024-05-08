@@ -38,7 +38,6 @@ export default function (io) {
 
   // get all messages by chatID
   router.get("/:chatID", auth, async (req, res) => {
-    console.log("Get Messages Called");
     const chatID = req.params.chatID;
 
     try {

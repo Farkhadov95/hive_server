@@ -54,6 +54,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", (room) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
   socket.on("new message", (newMessageRecieved) => {
     let chat = newMessageRecieved.chat;
@@ -64,5 +65,24 @@ io.on("connection", (socket) => {
       if (user._id == newMessageRecieved.sender._id) return;
       socket.in(user._id).emit("message received", newMessageRecieved);
     });
+  });
+
+  socket.on("new chat", (chat) => {
+    console.log("asked for new chat", chat);
+    chat.users.forEach((user) => {
+      socket.in(user._id).emit("new chat response", chat);
+    });
+  });
+
+  socket.on("chat deleted", (chat) => {
+    console.log("asked to delete", chat);
+    chat.users.forEach((user) => {
+      socket.in(user._id).emit("chat deleted response", chat);
+    });
+  });
+
+  socket.off("setup", () => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData._id);
   });
 });
