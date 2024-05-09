@@ -49,7 +49,7 @@ router.post("/", auth, async (req, res) => {
   });
 
   if (isChat.length > 0) {
-    res.send(isChat[0]);
+    return res.status(400).send("Chat already exists between these users.");
   } else {
     let chatData = {
       chatName: "New chat",
@@ -72,11 +72,12 @@ router.post("/", auth, async (req, res) => {
 
 // create group chat
 router.post("/group", auth, async (req, res) => {
-  if (!req.body.users || !req.body.name) {
+  console.log(req.body);
+  if (!req.body.users || !req.body.groupName) {
     return res.status(400).send("Please fill all the fields");
   }
 
-  let users = JSON.parse(req.body.users);
+  let users = req.body.users;
   if (users.length < 2) {
     return res
       .status(400)
@@ -88,7 +89,7 @@ router.post("/group", auth, async (req, res) => {
   try {
     const groupChat = await Chat.create({
       isGroupChat: true,
-      chatName: req.body.name,
+      chatName: req.body.groupName,
       users: users,
       groupAdmin: req.user,
     });
@@ -97,6 +98,7 @@ router.post("/group", auth, async (req, res) => {
       .populate("users", "-password")
       .populate("groupAdmin", "-password");
 
+    console.log("new group chat created");
     res.status(200).json(fullGroupChat);
   } catch (error) {
     console.error(error);
