@@ -67,15 +67,19 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("new group chat", (chat) => {
+    chat.users.forEach((user) => {
+      socket.in(user._id).emit("new group chat response", chat);
+    });
+  });
+
   socket.on("new chat", (chat) => {
-    console.log("asked for new chat");
     chat.users.forEach((user) => {
       socket.in(user._id).emit("new chat response", chat);
     });
   });
 
   socket.on("chat deleted", (chat) => {
-    console.log("asked to delete");
     chat.users.forEach((user) => {
       socket.in(user._id).emit("chat deleted response", chat);
     });

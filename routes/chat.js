@@ -98,7 +98,6 @@ router.post("/group", auth, async (req, res) => {
       .populate("users", "-password")
       .populate("groupAdmin", "-password");
 
-    console.log("new group chat created");
     res.status(200).json(fullGroupChat);
   } catch (error) {
     console.error(error);
