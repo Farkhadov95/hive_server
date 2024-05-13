@@ -12,10 +12,6 @@ const app = express();
 dotenv.config();
 const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}...`);
-});
-
 const io = new SocketIOServer(server, {
   pingTimeout: 60000,
   cors: {
@@ -101,3 +97,7 @@ io.on("connection", (socket) => {
     socket.leave(userData._id);
   });
 });
+
+const server = app.listen(port, () =>
+  console.log(`Server is running on port ${port}...`)
+);
