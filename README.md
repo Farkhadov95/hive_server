@@ -1,10 +1,10 @@
-# Hive Host
+# Hive Server
 
 ## Introduction
 
-CollectionHub Server: The Engine Powering Your Collections
+Hive Server: The Engine Powering Your Hive Messenger
 
-The CollectionHub Server silently runs behind the scenes, acting as the brain of the app. It's responsible for managing all your collection data, ensuring a smooth and secure experience:
+The Hive Server silently runs behind the scenes, acting as the brain of the app. It's responsible for managing all your collection data, ensuring a smooth and secure experience:
 
 - Always Up-to-Date: The server lets you create, edit, and delete items in your collections, keeping them organized and constantly evolving.
 
@@ -18,6 +18,5 @@ The CollectionHub Server silently runs behind the scenes, acting as the brain of
 
 - **Mongoose/MongoDB** for Database.
 - **Express.js** as Node.js Framework.
-- **Full-Text Search** to find collections, items or comments using build-in MongoDB text search capabilities.
-- **Socket.io** to see update comments in real-time.
+- **Socket.io** to see messages in real-time.
 - Authentication using **Tokens**.
