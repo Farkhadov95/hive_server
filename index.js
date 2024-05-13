@@ -79,6 +79,12 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("new chat name", (chat) => {
+    chat.users.forEach((user) => {
+      socket.in(user._id).emit("new chat name response", chat);
+    });
+  });
+
   socket.on("chat deleted", (chat) => {
     chat.users.forEach((user) => {
       socket.in(user._id).emit("chat deleted response", chat);

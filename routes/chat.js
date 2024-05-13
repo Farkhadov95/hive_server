@@ -72,7 +72,6 @@ router.post("/", auth, async (req, res) => {
 
 // create group chat
 router.post("/group", auth, async (req, res) => {
-  console.log(req.body);
   if (!req.body.users || !req.body.groupName) {
     return res.status(400).send("Please fill all the fields");
   }
@@ -106,8 +105,10 @@ router.post("/group", auth, async (req, res) => {
 });
 
 // update chat's name
-router.put("/rename", auth, async (req, res) => {
-  const { chatID, chatName } = req.body;
+router.patch("/rename/:id", auth, async (req, res) => {
+  if (!req.body.chatName) return res.status(400).send("Chat name is required");
+  const chatID = req.params.id;
+  const { chatName } = req.body;
 
   const update = await Chat.findByIdAndUpdate(
     chatID,
