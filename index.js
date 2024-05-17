@@ -91,6 +91,12 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("user deleted", (chat) => {
+    chat.users.forEach((user) => {
+      socket.in(user._id).emit("user deleted response", chat);
+    });
+  });
+
   socket.off("setup", () => {
     console.log("USER DISCONNECTED");
     socket.leave(userData._id);
