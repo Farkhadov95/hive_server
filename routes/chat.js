@@ -2,7 +2,6 @@ import express from "express";
 import Chat from "../models/chat.js";
 import auth from "../middleware/auth.js";
 import User from "../models/user.js";
-import c from "config";
 
 const router = express.Router();
 
@@ -111,7 +110,7 @@ router.patch("/rename/:id", auth, async (req, res) => {
   const chatID = req.params.id;
   const { chatName } = req.body;
 
-  const update = await Chat.findByIdAndUpdate(
+  const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
       chatName,
@@ -121,8 +120,8 @@ router.patch("/rename/:id", auth, async (req, res) => {
     .populate("users", "-password")
     .populate("groupAdmin", "-password");
 
-  if (!update) return res.status(404).send("Chat not found");
-  res.send(update);
+  if (!updatedChat) return res.status(404).send("Chat not found");
+  res.send(updatedChat);
 });
 
 // add new user to group chat
@@ -130,7 +129,7 @@ router.patch("/add/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
   const { userID } = req.body;
 
-  const update = await Chat.findByIdAndUpdate(
+  const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
       $push: { users: userID },
@@ -142,8 +141,8 @@ router.patch("/add/:chatID", auth, async (req, res) => {
     .populate("users", "-password")
     .populate("groupAdmin", "-password");
 
-  if (!update) return res.status(404).send("Chat not found");
-  res.send(update);
+  if (!updatedChat) return res.status(404).send("Chat not found");
+  res.send(updatedChat);
 });
 
 // delete user from group chat
@@ -151,7 +150,7 @@ router.patch("/remove/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
   const { userID } = req.body;
 
-  const remove = await Chat.findByIdAndUpdate(
+  const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
       $pull: { users: userID },
@@ -163,8 +162,8 @@ router.patch("/remove/:chatID", auth, async (req, res) => {
     .populate("users", "-password")
     .populate("groupAdmin", "-password");
 
-  if (!remove) return res.status(404).send("Chat not found");
-  res.send(remove);
+  if (!updatedChat) return res.status(404).send("Chat not found");
+  res.send(updatedChat);
 });
 
 // delete chat
