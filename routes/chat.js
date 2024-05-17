@@ -2,6 +2,7 @@ import express from "express";
 import Chat from "../models/chat.js";
 import auth from "../middleware/auth.js";
 import User from "../models/user.js";
+import c from "config";
 
 const router = express.Router();
 
@@ -125,8 +126,9 @@ router.patch("/rename/:id", auth, async (req, res) => {
 });
 
 // add new user to group chat
-router.put("/add", auth, async (req, res) => {
-  const { chatID, userID } = req.body;
+router.patch("/add/:chatID", auth, async (req, res) => {
+  const chatID = req.params.chatID;
+  const { userID } = req.body;
 
   const update = await Chat.findByIdAndUpdate(
     chatID,
@@ -145,8 +147,9 @@ router.put("/add", auth, async (req, res) => {
 });
 
 // delete user from group chat
-router.put("/remove", auth, async (req, res) => {
-  const { chatID, userID } = req.body;
+router.patch("/remove/:chatID", auth, async (req, res) => {
+  const chatID = req.params.chatID;
+  const { userID } = req.body;
 
   const remove = await Chat.findByIdAndUpdate(
     chatID,
