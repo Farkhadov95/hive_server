@@ -93,6 +93,7 @@ io.on("connection", (socket) => {
 
   socket.on("user deleted", (chat) => {
     console.log("User deleted in ", chat.chatName);
+    console.log("Chat Users: ", chat.users);
     chat.users.forEach((user) => {
       socket.in(user._id).emit("user deleted response", chat);
     });
