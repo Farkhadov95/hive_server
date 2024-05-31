@@ -124,15 +124,15 @@ router.patch("/rename/:id", auth, async (req, res) => {
   res.send(updatedChat);
 });
 
-// add new user to group chat
+// add users to group chat
 router.patch("/add/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
-  const { userID } = req.body;
+  const { usersID } = req.body;
 
   const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
-      $push: { users: userID },
+      $push: { users: { $each: usersID } },
     },
     {
       new: true,
