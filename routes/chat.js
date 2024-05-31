@@ -132,7 +132,7 @@ router.patch("/add/:chatID", auth, async (req, res) => {
   const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
-      $push: { users: { $each: userIDs } },
+      $push: { users: { userIDs } },
     },
     {
       new: true,
