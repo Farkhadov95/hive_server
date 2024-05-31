@@ -127,23 +127,24 @@ router.patch("/rename/:id", auth, async (req, res) => {
 // add users to group chat
 router.patch("/add/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
-  const { userIDs } = req.body;
-  console.log(userIDs);
+  // const { userIDs } = req.body;
+  console.log(req.body);
 
-  const updatedChat = await Chat.findByIdAndUpdate(
-    chatID,
-    {
-      $push: { users: { $each: userIDs } },
-    },
-    {
-      new: true,
-    }
-  )
-    .populate("users", "-password")
-    .populate("groupAdmin", "-password");
+  // const updatedChat = await Chat.findByIdAndUpdate(
+  //   chatID,
+  //   {
+  //     $push: { users: { $each: userIDs } },
+  //   },
+  //   {
+  //     new: true,
+  //   }
+  // )
+  //   .populate("users", "-password")
+  //   .populate("groupAdmin", "-password");
 
-  if (!updatedChat) return res.status(404).send("Chat not found");
-  res.send(updatedChat);
+  // if (!updatedChat) return res.status(404).send("Chat not found");
+  // res.send(updatedChat);
+  res.send("ok");
 });
 
 // delete user from group chat
