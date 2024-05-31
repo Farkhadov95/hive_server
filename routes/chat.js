@@ -148,12 +148,12 @@ router.patch("/add/:chatID", auth, async (req, res) => {
 // delete user from group chat
 router.patch("/remove/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
-  const { userID } = req.body;
+  const { userIDs } = req.body;
 
   const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
-      $pull: { users: userID },
+      $pull: { users: userIDs },
     },
     {
       new: true,
