@@ -129,10 +129,14 @@ router.patch("/add/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
   const { userIDs } = req.body;
 
+  if (!Array.isArray(userIDs)) {
+    return res.status(400).send("userIDs must be an array");
+  }
+
   const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
-      $push: { users: { $in: userIDs } },
+      $push: { users: { $each: userIDs } },
     },
     {
       new: true,
@@ -167,7 +171,6 @@ router.patch("/remove/:chatID", auth, async (req, res) => {
     .populate("groupAdmin", "-password");
 
   if (!updatedChat) return res.status(404).send("Chat not found");
-  console.log(updatedChat);
   res.send(updatedChat);
 });
 
