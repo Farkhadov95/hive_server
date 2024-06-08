@@ -129,14 +129,10 @@ router.patch("/add/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
   const { userIDs } = req.body;
 
-  if (!Array.isArray(userIDs)) {
-    return res.status(400).send("userIDs must be an array");
-  }
-
   const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
-      $pull: { users: { $in: userIDs } }, // Updated to use $in with an array
+      $push: { users: userIDs },
     },
     {
       new: true,
@@ -154,10 +150,14 @@ router.patch("/remove/:chatID", auth, async (req, res) => {
   const chatID = req.params.chatID;
   const { userIDs } = req.body;
 
+  if (!Array.isArray(userIDs)) {
+    return res.status(400).send("userIDs must be an array");
+  }
+
   const updatedChat = await Chat.findByIdAndUpdate(
     chatID,
     {
-      $pull: { users: userIDs },
+      $pull: { users: { $in: userIDs } }, // Updated to use $in with an array
     },
     {
       new: true,
