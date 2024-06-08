@@ -163,6 +163,7 @@ router.patch("/remove/:chatID", auth, async (req, res) => {
     .populate("groupAdmin", "-password");
 
   if (!updatedChat) return res.status(404).send("Chat not found");
+  console.log(updatedChat);
   res.send(updatedChat);
 });
 
